@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HANA Replication SQL Generator</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+  padding: 40px;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+textarea {
+  width: 100%;
+  height: 150px;
+  padding: 10px;
+  margin-bottom: 20px;
+  font-family: monospace;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.generate {
+  background-color: #0070f2;
+  color: white;
+}
+
+.clear {
+  background-color: #999;
+  color: white;
+}
+
+.copy {
+  background-color: #107e3e;
+  color: white;
+}
+
+.output {
+  margin-top: 20px;
+  white-space: pre-wrap;
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-family: monospace;
+  font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>SAP HANA Replication SQL Generator</h2>
+
+  <label>Enter values (System TableName):</label>
+  <textarea id="input" placeholder="06 ZDSD_VC_VLH&#10;07 ZABC_TABLE"></textarea>
+
+  <div>
+    <button class="generate" onclick="generateSQL()">Generate</button>
+    <button class="copy" onclick="copyOutput()">Copy</button>
+    <button class="clear" onclick="clearAll()">Clear</button>
+  </div>
+
+  <div id="output" class="output"></div>
+</div>
+
+<script>
+function generateSQL() {
+  const schema = "P06CLNT100";
+  const input = document.getElementById("input").value.trim();
+  const lines = input.split("\n");
+  let result = "";
+
+  lines.forEach(line => {
+    line = line.trim();
+    if (!line) return;
+
+    const parts = line.split(/\s+/);
+    if (parts.length < 2) return;
+
+    const sys = parts[0];
+    const table = parts[1];
+
+    result += `CALL "${schema}"."ZSDI.RT_Z${sys}::RT_Z${sys}_${table}.START_REPLICATION"();\n`;
+  });
+
+  document.getElementById("output").textContent = result;
+}
+
+function copyOutput() {
+  const output = document.getElementById("output").textContent;
+  navigator.clipboard.writeText(output);
+  alert("Copied to clipboard!");
+}
+
+function clearAll() {
+  document.getElementById("input").value = "";
+  document.getElementById("output").textContent = "";
+}
+</script>
+
+</body>
+</html>
