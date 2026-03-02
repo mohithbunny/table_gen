@@ -106,7 +106,7 @@ function generateSQL() {
     const sys = parts[0];
     const table = parts[1];
 
-    result += `CALL "${sys}"."ZSDI.RT_Z${sys}::RT_Z${sys}_${table}.START_REPLICATION"();\n`;
+    result += `CALL "P${sys}CLNT100"."ZSDI.RT_Z${sys}::RT_Z${sys}_${table}.START_REPLICATION"();\n`;
   });
 
   document.getElementById("output").textContent = result;
